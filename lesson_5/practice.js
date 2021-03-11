@@ -212,9 +212,40 @@ let arr_2 = [['a', 1], ['b', 'two'], ['sea', {'c': 3}], ['D', ['a', 'b', 'c']]];
 // expected return value of function call
 // { a: 1, b: 'two', sea: { c: 3 }, D: [ 'a', 'b', 'c' ] }
 
+let objectArr2 = {};
+
+arr_2.forEach(subarray => {
+  let key = subarray[0];
+  let value = subarray[1];
+
+  objectArr2[key] = value;
+});
+
+console.log(objectArr2);
 
 
+// write a functio that generates UUID
 
+const characters  = 'abcdef0123456789';
+
+function randomid(len) {
+  let code = '';
+  let charLength = characters.length;
+
+  for (let i = 0; i < len; i++) {
+    code += characters.charAt(Math.floor(Math.random() *  charLength));
+  }
+  return code;
+}
+
+function uuidGenerator() {
+  let uuid = [];
+  uuid.push(randomid(8),randomid(4),randomid(4),randomid(4),randomid(12));
+  return uuid.join('-');
+}
+
+let newUUID = uuidGenerator();
+console.log(newUUID);
 
 
 
