@@ -148,24 +148,30 @@ const totalRounds = 5;
 
 while (true) {
   let playerPoints = 0, computerPoints = 0;
+  for (let round = 0; round < totalRounds; round++) {
+    let board = initBoard();
+    while (true) {
+      displayBoard(board);
 
-  let board = initBoard();
+      playerChosesSpace(board);
+      if (detectWinner(board) === 'Player') {
+        playerPoints++;
+      }
+      if (someOneWon(board) || boardFull(board)) break;
 
-  while (true) {
-    displayBoard(board);
-
-    playerChosesSpace(board);
-    if (someOneWon(board) || boardFull(board)) break;
-
-    computerChosesSpace(board);
-    if (someOneWon(board) || boardFull(board)) break;
+      computerChosesSpace(board);
+      if (detectWinner(board) === 'Computer') {
+        computerPoints++;
+      }
+      if (someOneWon(board) || boardFull(board)) break;
+    }
+    console.log(`Player points : ${playerPoints}`);
+    console.log(`Computer points : ${computerPoints}`);
   }
-  displayBoard(board);
-
-  if (someOneWon(board)) {
-    console.log(`${detectWinner(board)} won!`);
+  if (playerPoints > computerPoints) {
+    console.log('Player wins');
   } else {
-    console.log('It is a tie!');
+    console.log('Computer wins');
   }
   console.log('Hit y to play again. Hit any key to exit.')
   let answer = readline.question().toLowerCase();
