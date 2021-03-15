@@ -95,6 +95,18 @@ function boardFull(board) {
   return emptySpaces(board).length === 0;
 }
 
+function chooseSquare(board, player) {
+  if (player = 'Player') {
+    return playerChosesSpace(board);
+  } else {
+    return computerChosesSpace(board);
+  }
+}
+
+function alternatePlayer(currentPlayer) {
+  return currentPlayer === 'Player'? 'Computer' : 'Player';
+}
+
 //joinOr
 function joinOr(array, delimiter=',', connector = ' or ') {
   let len = array.length;
@@ -152,7 +164,6 @@ while (true) {
     let board = initBoard();
     while (true) {
       displayBoard(board);
-
       playerChosesSpace(board);
       if (detectWinner(board) === 'Player') {
         playerPoints++;
