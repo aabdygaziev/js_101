@@ -165,7 +165,7 @@ while (true) {
   }
 
   prompt('Dealer turn');
-  while (dealerScore <= dealerLimit) {
+  while (getScore(dealerHand) < dealerLimit) {
     prompt('Dealer hits');
     dealCards(deck, dealerHand);
     prompt(`Dealer cards are: ${dealerHand}`);
