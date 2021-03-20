@@ -58,14 +58,11 @@ function getScore(hand) {
 }
 
 //game point check
-function busted(hand) {
-  return getScore(hand) > 21;
+function busted(score) {
+  return score > 21;
 }
 
-function getResults(playerHand, dealerHand) {
-  let playerTotal = getScore(playerHand);
-  let dealerTotal = getScore(dealerHand);
-
+function getResults(playerTotal, dealerTotal) {
   if (playerTotal > 21) {
     return 'PLAYER_BUSTED';
   } else if (dealerTotal > 21) {
@@ -78,9 +75,8 @@ function getResults(playerHand, dealerHand) {
     return 'TIE';
   }
 }
-function displayResults(playerHand, dealerHand) {
-  let result = getResults(playerHand, dealerHand);
 
+function displayResults(result) {
   switch (result) {
     case 'PLAYER_BUSTED':
       prompt('You busted! Dealer wins!');
@@ -117,75 +113,101 @@ function firstDeal(deck) {
 
 function playAgain() {
   prompt('-------------------------\nWould you like to play again?');
-  let ask = readline.question();
-  return ask.toLowerCase()[0] === 'y';
+  let ask = readline.question().toLowerCase();
+  while (ask !== 'y' && ask !== 'n'){
+    prompt('Please enter "y" or "n".');
+    ask = readline.question().toLowerCase();
+  }
+  return ask === 'y';
+}
+
+function roundsToPlay() {
+  let rounds = readline.question(`Please enter number of rounds to play.`);
+  rounds = Number(rounds);
+  while (typeof rounds !== 'number') {
+    prompt('Please enter a number from 1 to 9');
+  }
+  return rounds;
 }
 
 // -------- main game loop ------------ //
 
 while (true) {
   console.clear();
-  prompt('Welcomei to Twenty-One!');
+  prompt('Welcomei to Twenty-One!\n');
 
-  deck = deckInit(rank, suit);
-  shuffle(deck);
-  let [playerHand, dealerHand] = firstDeal(deck);
-  let playerScore = getScore(playerHand);
-  let dealerScore = getScore(dealerHand);
+  let rounds = roundsToPlay();
+  prompt(`${rounds} is goint to be played.`);
+  prompt(`Player who wins the most rounds wins the game.\n`);
 
-  prompt(`Dealer has ${dealerHand[0]} and ?\n`);
-  prompt(`You have: ${playerHand} and ${playerScore} points.`);
+  let playerWins = 0;
+  let dealerWins = 0;
 
-  while (true) {
-    let answer;
+  for (let roundCounter = 1; roundCounter <= rounds; roundCounter++) {
+    prompt(`----------- Round #: ${roundCounter} -----------\n`)
+    let deck = deckInit(rank, suit);
+    shuffle(deck);
+    let [playerHand, dealerHand] = firstDeal(deck);
+    let playerScore = getScore(playerHand);
+    let dealerScore = getScore(dealerHand);
+
+    prompt(`Dealer has ${dealerHand[0]} and unknown card.\n`);
+    prompt(`You have: ${playerHand} and ${playerScore} points.`);
     while (true) {
-      prompt('Would you like to (h)it or (s)tay?');
-      answer = readline.question().toLowerCase();
-      if (['h', 's'].includes(answer)) break;
-      prompt('Please enter "h" or "s"');
-    }
+      let answer;
 
-    if (answer === 'h') {
-      dealCards(deck, playerHand);
-      prompt('You chose hit.');
-      prompt(`Your cards: ${playerHand}.\nYour score: ${getScore(playerHand)}`)
+      while (true) {
+        prompt('Would you like to (h)it or (s)tay?');
+        answer = readline.question().toLowerCase();
+        if (['h', 's'].includes(answer)) break;
+        prompt('Please enter "h" or "s"');
+      }
+
+      if (answer === 'h') {
+        dealCards(deck, playerHand);
+        playerScore = getScore(playerHand);
+        prompt('You chose hit.');
+        prompt(`Your hand: ${playerHand}`);
+        prompt(`Your score: ${playerScore}`);
+      }
+      if (answer === 's' || busted(playerScore)) break;
     }
-    if (answer === 's' || busted(playerHand)) break;
-  }
-  if (busted(playerHand)) {
-    prompt(`You have: ${getScore(playerHand)} points.`)
-    displayResults(playerHand, dealerHand);
-    if (playAgain()) {
-      continue;
+    if (busted(playerScore)) {
+      prompt(`You have: ${playerScore} points.`);
+      let result = getResults(playerScore, dealerScore);
+      displayResults(result);
     } else {
-      break;
+      prompt(`You stayed at ${playerScore} points.`);
     }
-  } else {
-    prompt(`You stayed at ${getScore(playerHand)} points.`);
-  }
 
-  prompt('Dealer turn');
-  while (getScore(dealerHand) < dealerLimit) {
-    prompt('Dealer hits');
-    dealCards(deck, dealerHand);
-    prompt(`Dealer cards are: ${dealerHand}`);
-  }
-
-  if (busted(dealerHand)) {
-    prompt(`Dealer has: ${getScore(dealerHand)} points.`);
-    displayResults(playerHand, dealerHand);
-    if (playAgain()) {
-      continue;
-    } else {
-      break;
+    prompt('Dealer turn');
+    while (dealerScore < dealerLimit) {
+      prompt('Dealer hits');
+      dealCards(deck, dealerHand);
+      dealerScore = getScore(dealerHand);
+      prompt(`Dealer"s hand: ${dealerHand}`);
+      prompt(`Dealer"s score: ${dealerScore}`);
     }
-  } else {
-    prompt('Dealer stays.');
-  }
-  console.log('======= Game Stats ========');
-  prompt(`Player has:${playerHand}, and ${getScore(playerHand)} points.`);
-  prompt(`Player has:${dealerHand}, and ${getScore(dealerHand)} points.`);
 
-  displayResults(playerHand, dealerHand);
+    if (busted(dealerScore)) {
+      prompt(`Dealer has: ${dealerScore} points.`);
+      let result = getResults(playerScore, dealerScore);
+      displayResults(result);
+      prompt('Dealer stays.');
+    }
+    let result = getResults(playerScore, dealerScore);
+    if (result === 'PLAYER' || result === 'DEALER_BUSTED') {
+      playerWins++;
+    } else if (result === 'DEALER' || result === 'PLAYER_BUSTED') {
+      dealerWins++;
+    }
+    console.log('\n======= Game Stats ========\n');
+    prompt(`Player has:${playerHand}, and ${playerScore} points.`);
+    prompt(`Dealer has:${dealerHand}, and ${dealerScore} points.`);
+    prompt(`Player has won ${playerWins} rounds.`)
+    prompt(`Dealer has won ${dealerWins} rounds.`)
+  }
+
   if (!playAgain()) break;
+  console.clear()
 }
