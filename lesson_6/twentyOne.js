@@ -134,10 +134,10 @@ function roundsToPlay() {
 
 while (true) {
   console.clear();
-  prompt('Welcomei to Twenty-One!\n');
+  prompt('Welcome to Twenty-One!\n');
 
   let rounds = roundsToPlay();
-  prompt(`${rounds} is goint to be played.`);
+  prompt(`${rounds} rounds is goint to be played.`);
   prompt(`Player who wins the most rounds wins the game.\n`);
 
   let playerWins = 0;
