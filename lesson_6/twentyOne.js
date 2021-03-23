@@ -114,7 +114,7 @@ function firstDeal(deck) {
 function playAgain() {
   prompt('-------------------------\nWould you like to play again?');
   let ask = readline.question().toLowerCase();
-  while (ask !== 'y' && ask !== 'n'){
+  while (ask !== 'y' && ask !== 'n') {
     prompt('Please enter "y" or "n".');
     ask = readline.question().toLowerCase();
   }
@@ -122,12 +122,13 @@ function playAgain() {
 }
 
 function roundsToPlay() {
-  let rounds = readline.question(`Please enter number of rounds to play.`);
-  rounds = Number(rounds);
-  while (typeof rounds !== 'number') {
-    prompt('Please enter a number from 1 to 9: ');
+  prompt('Please enter a number between 1 - 9:');
+  let round = Number(readline.question());
+  while (typeof round !== 'number') {
+    prompt('Please enter a number between 1 - 9:');
+    round = Number(readline.question());
   }
-  return rounds;
+  return round;
 }
 
 // -------- main game loop ------------ //
@@ -144,7 +145,7 @@ while (true) {
   let dealerWins = 0;
 
   for (let roundCounter = 1; roundCounter <= rounds; roundCounter++) {
-    prompt(`----------- Round #: ${roundCounter} -----------\n`)
+    prompt(`----------- Round #: ${roundCounter} -----------\n`);
     let deck = deckInit(rank, suit);
     shuffle(deck);
     let [playerHand, dealerHand] = firstDeal(deck);
@@ -204,17 +205,17 @@ while (true) {
     console.log('\n======= Game Stats ========\n');
     prompt(`Player has:${playerHand}, and ${playerScore} points.`);
     prompt(`Dealer has:${dealerHand}, and ${dealerScore} points.`);
-    prompt(`Player has won ${playerWins} rounds.`)
-    prompt(`Dealer has won ${dealerWins} rounds.`)
+    prompt(`Player has won ${playerWins} rounds.`);
+    prompt(`Dealer has won ${dealerWins} rounds.`);
   }
   if (playerWins > dealerWins) {
     prompt('\nYou won the game!');
   } else if (playerWins < dealerWins) {
-    prompt('\nDealer won the game!')
+    prompt('\nDealer won the game!');
   } else {
     prompt('\nTIE!');
   }
 
   if (!playAgain()) break;
-  console.clear()
+  console.clear();
 }
