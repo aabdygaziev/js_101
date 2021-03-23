@@ -125,7 +125,7 @@ function roundsToPlay() {
   let rounds = readline.question(`Please enter number of rounds to play.`);
   rounds = Number(rounds);
   while (typeof rounds !== 'number') {
-    prompt('Please enter a number from 1 to 9');
+    prompt('Please enter a number from 1 to 9: ');
   }
   return rounds;
 }
@@ -206,6 +206,13 @@ while (true) {
     prompt(`Dealer has:${dealerHand}, and ${dealerScore} points.`);
     prompt(`Player has won ${playerWins} rounds.`)
     prompt(`Dealer has won ${dealerWins} rounds.`)
+  }
+  if (playerWins > dealerWins) {
+    prompt('\nYou won the game!');
+  } else if (playerWins < dealerWins) {
+    prompt('\nDealer won the game!')
+  } else {
+    prompt('\nTIE!');
   }
 
   if (!playAgain()) break;
